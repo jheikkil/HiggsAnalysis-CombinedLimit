@@ -72,7 +72,7 @@ class CommonMatrix(SMLikeHiggsModel):
                         self.modelBuilder.out.var("MH").removeRange()
                         self.modelBuilder.out.var("MH").setVal(self.options.mass)
         else:
-               if len(self.mHRange):
+                if len(self.mHRange):
                         print 'MH will be left floating within', self.mHRange[0], 'and', self.mHRange[1]
                         self.modelBuilder.doVar("MH[%s,%s]" % (self.mHRange[0],self.mHRange[1]))
                         poi.append('MH');
