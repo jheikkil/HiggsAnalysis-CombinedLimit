@@ -6,13 +6,13 @@ class CommonMatrix(SMLikeHiggsModel):
         self.decays = [ "hbb", "htt", "hgg", "hww", "hzz" ]
         self.productions = ["ggH", "qqH", "ZH", "WH", "ttH"]
         self.fixDecays = []
-	self.mHRange = []
+        self.mHRange = []
     def setPhysicsOptions(self,physOptions):
         for po in physOptions:
             if po.startswith("decays="): self.decays = po.replace("decays=","").split(",")
             if po.startswith("productions="): self.productions = po.replace("productions=","").split(",")
             if po.startswith("fixDecays="): self.fixDecays = po.replace("fixDecays=","").split(",")
-	    if po.startswith("higgsMassRange="):
+            if po.startswith("higgsMassRange="):
                 self.mHRange = po.replace("higgsMassRange=","").split(",")
                 if len(self.mHRange) != 2:
                     raise RuntimeError, "Higgs mass range definition requires two extrema"
@@ -50,8 +50,8 @@ class CommonMatrix(SMLikeHiggsModel):
                 poi.append('mu_'+decay)
             else:
                 self.modelBuilder.doVar("mu_%s[1,0,5]" % decay)
-	    self.modelBuilder.doVar("lambda_%s[1,0,10]" % decay)
-	    self.modelBuilder.doVar("lambdaz_%s[1,0,10]" % decay)
+            self.modelBuilder.doVar("lambda_%s[1,0,10]" % decay)
+            self.modelBuilder.doVar("lambdaz_%s[1,0,10]" % decay)
             self.modelBuilder.doVar("lambdaw_%s[1,0,10]" % decay)
             self.modelBuilder.doVar("lambdat_%s[1,0,10]" % decay)
             self.modelBuilder.factory_("expr::lambda_%smu_%slambda(\"@0*@1*@2\",lambda_%s,mu_%s,lambda)" % (decay,decay,decay,decay))
@@ -59,41 +59,41 @@ class CommonMatrix(SMLikeHiggsModel):
             self.modelBuilder.factory_("expr::lambdaw_%smu_%slambdaw(\"@0*@1*@2\",lambdaw_%s,mu_%s,lambdaw)" % (decay,decay,decay,decay))
             self.modelBuilder.factory_("expr::lambdat_%smu_%slambdat(\"@0*@1*@2\",lambdat_%s,mu_%s,lambdat)" % (decay,decay,decay,decay))
         self.modelBuilder.doSet("POI", ",".join(poi) )
-	if self.modelBuilder.out.var("MH"):
+        if self.modelBuilder.out.var("MH"):
                 if len(self.mHRange):
                         print 'MH will be left floating within', self.mHRange[0], 'and', self.mHRange[1]
                         self.modelBuilder.out.var("MH").setRange(float(self.mHRange[0]),float(self.mHRange[1]))
                         self.modelBuilder.out.var("MH").setConstant(False)
-			poi.append('MH');
-			self.modelBuilder.doSet("POI", ",".join(poi) )
-                        #self.modelBuilder.doSet('POI','poi,MH')
-                else:
-                     	print 'MH will be assumed to be', self.options.mass
-                        self.modelBuilder.out.var("MH").removeRange()
-                        self.modelBuilder.out.var("MH").setVal(self.options.mass)
-        else:
-             	if len(self.mHRange):
-                        print 'MH will be left floating within', self.mHRange[0], 'and', self.mHRange[1]
-                        self.modelBuilder.doVar("MH[%s,%s]" % (self.mHRange[0],self.mHRange[1]))
-			poi.append('MH');
+                        poi.append('MH');
                         self.modelBuilder.doSet("POI", ",".join(poi) )
                         #self.modelBuilder.doSet('POI','poi,MH')
                 else:
-                     	print 'MH (not there before) will be assumed to be', self.options.mass
+                        print 'MH will be assumed to be', self.options.mass
+                        self.modelBuilder.out.var("MH").removeRange()
+                        self.modelBuilder.out.var("MH").setVal(self.options.mass)
+        else:
+               if len(self.mHRange):
+                        print 'MH will be left floating within', self.mHRange[0], 'and', self.mHRange[1]
+                        self.modelBuilder.doVar("MH[%s,%s]" % (self.mHRange[0],self.mHRange[1]))
+                        poi.append('MH');
+                        self.modelBuilder.doSet("POI", ",".join(poi) )
+                        #self.modelBuilder.doSet('POI','poi,MH')
+                else:
+                        print 'MH (not there before) will be assumed to be', self.options.mass
                         self.modelBuilder.doVar("MH[%g]" % self.options.mass)
-	for item in poi:
-           print item
+        for item in poi:
+                print item
     #the next part is for the special case, where the ratio (look for your papers) is constant
     def getHiggsSignalYieldScale(self,production,decay, energy):
 	#print 'Printing out:', production, decay, energy, 'mu_'+decay
 	#return 'mu_'+decay
-	if decay=="hmm":
-                decay="htt"
+        if decay=="hmm":
+                decay="htt" 
         if decay=="hzg":
                 decay="hgg"
         if decay in [ "hgluglu", "hcc", "hss", "huu", "hdd" ]:
                 decay="hbb"
-	if production == "ggH" or production == "bbH":
+        if production == "ggH" or production == "bbH":
                 return 'mu_'+decay
         elif production == "qqH":
                 return 'lambda_'+decay+'mu_'+decay+'lambda'
@@ -102,7 +102,7 @@ class CommonMatrix(SMLikeHiggsModel):
         elif production == "WH":
                 return 'lambdaw_'+decay+'mu_'+decay+'lambdaw'
         elif production == "ttH" or production == "tH":
-		return 'lambdat_'+decay+'mu_'+decay+'lambdat'	
+                return 'lambdat_'+decay+'mu_'+decay+'lambdat'	
         else: raise RuntimeError, "Unknown production mode '%s'" %production
 
 commonMatrix= CommonMatrix()
